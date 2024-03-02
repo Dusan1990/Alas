@@ -1,0 +1,401 @@
+{
+	"info": {
+		"_postman_id": "0a9105e6-56ce-42fd-acca-90875ffd5012",
+		"name": "Alas_doo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21277209"
+	},
+	"item": [
+		{
+			"name": "Create user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"window = {}",
+							"pm.sendRequest('https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js',",
+							"    (error, response) => {",
+							"        if (error || response.code !== 200){",
+							"            pm.expectfail('Not loaded JS')",
+							"    }",
+							"    eval(response.text())",
+							"    ",
+							"    window.faker.locale = 'en'",
+							"    let randomId = Math.floor(Math.random() * 9000000) + 1000000",
+							"    pm.collectionVariables.set('id', randomId.toString())",
+							"    pm.collectionVariables.set('randomName', window.faker.name.firstName())",
+							"    pm.collectionVariables.set('randomEmail', window.faker.internet.email())    ",
+							"    pm.collectionVariables.set('randomGender', window.faker.random.arrayElement(['male', 'female']))",
+							"    pm.collectionVariables.set('randomStatus', window.faker.random.arrayElement(['active', 'inactive']))",
+							"    ",
+							"})",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Check the status code",
+							"pm.test('Status code is 201', function () {",
+							"    pm.response.to.have.status(201)",
+							"})",
+							"",
+							"// Check that the property exists",
+							"pm.test('Check that the id field exist', function () {",
+							"   pm.expect(pm.response.json()).to.have.property('id')",
+							"})",
+							"// Save the id so it can be used later for other requests",
+							"pm.environment.set(\"createdUserId\", pm.response.json().id)",
+							"",
+							"// Check that the property exists and that the response is as expected",
+							"pm.test('Check that the name field exist', function () {",
+							"    pm.response.to.have.jsonBody('name')",
+							"    pm.expect(pm.response.json().name).to.eql(pm.collectionVariables.get('randomName'))",
+							"})",
+							"",
+							"// Check that the property exists and that the response is as expected",
+							"pm.test('Check that the email field exist', function () {",
+							"    pm.response.to.have.jsonBody('email')",
+							"    pm.expect(pm.response.json().email).to.eql(pm.collectionVariables.get('randomEmail'))",
+							"})",
+							"",
+							"// Check that the property exists and that the response is as expected",
+							"pm.test('Check that the gender field exist', function () {",
+							"    pm.response.to.have.jsonBody('gender')",
+							"    pm.expect(pm.response.json().gender).to.eql(pm.collectionVariables.get('randomGender'))",
+							"})",
+							"",
+							"// Check that the property exists and that the response is as expected",
+							"pm.test('Check that the status field exist', function () {",
+							"    pm.response.to.have.jsonBody('status')",
+							"    pm.expect(pm.response.json().status).to.eql(pm.collectionVariables.get('randomStatus'))",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{id}}\",\n    \"name\": \"{{randomName}}\",\n    \"email\": \"{{randomEmail}}\",\n    \"gender\": \"{{randomGender}}\",\n    \"status\": \"{{randomStatus}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/v2/users",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v2",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status code is 404', function () {",
+							"    pm.response.to.have.status(404)",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/v2/users/{{createdUserId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v2",
+						"users",
+						"{{createdUserId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Check the status code",
+							"pm.test('Status code is 200', function () {",
+							"    pm.response.to.have.status(200)",
+							"})",
+							"",
+							"// Check that the property exists",
+							"pm.test('Check that the id field exist', function () {",
+							"   pm.expect(pm.response.json()).to.have.property('id')",
+							"})",
+							"",
+							"// Check that the property exists and that the response is as expected",
+							"pm.test('Check that the name field exist and that the response is as expected', function () {",
+							"    pm.response.to.have.jsonBody('name')",
+							"    pm.expect(pm.response.json().name).to.eql(pm.collectionVariables.get('randomName'))",
+							"})",
+							"",
+							"// Check that the property exists and that the response is as expected",
+							"pm.test('Check that the email field exist and that the response is as expected', function () {",
+							"    pm.response.to.have.jsonBody('email')",
+							"    pm.expect(pm.response.json().email).to.eql(pm.collectionVariables.get('randomEmail'))",
+							"})",
+							"",
+							"// Check that the property exists and that the response is as expected",
+							"pm.test('Check that the gender field exist and that the response is as expected', function () {",
+							"    pm.response.to.have.jsonBody('gender')",
+							"    pm.expect(pm.response.json().gender).to.eql(pm.collectionVariables.get('randomGender'))",
+							"})",
+							"",
+							"// Check that the property exists and that the response is as expected",
+							"pm.test('Check that the status field exist and that the response is as expected', function () {",
+							"    pm.response.to.have.jsonBody('status')",
+							"    pm.expect(pm.response.json().status).to.eql(pm.collectionVariables.get('randomStatus'))",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"window = {}",
+							"pm.sendRequest('https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js',",
+							"    (error, response) => {",
+							"        if (error || response.code !== 200){",
+							"            pm.expectfail('Not loaded JS')",
+							"    }",
+							"    eval(response.text())",
+							"    ",
+							"    window.faker.locale = 'en'",
+							"    let randomId = Math.floor(Math.random() * 9000000) + 1000000",
+							"    pm.collectionVariables.set('id', randomId.toString())",
+							"    pm.collectionVariables.set('randomName', window.faker.name.firstName())",
+							"    pm.collectionVariables.set('randomEmail', window.faker.internet.email())    ",
+							"    pm.collectionVariables.set('randomGender', window.faker.random.arrayElement(['male', 'female']))",
+							"    pm.collectionVariables.set('randomStatus', window.faker.random.arrayElement(['active', 'inactive']))",
+							"    ",
+							"",
+							"})",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 6753684,\n    \"name\": \"{{randomName}}\",\n    \"email\": \"{{randomEmail}}\",\n    \"gender\": \"{{randomGender}}\",\n    \"status\": \"{{randomStatus}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/v2/users/{{createdUserId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v2",
+						"users",
+						"{{createdUserId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Check the status code",
+							"pm.test('Status code is 204', function () {",
+							"    pm.response.to.have.status(204)",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/v2/users/{{createdUserId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v2",
+						"users",
+						"{{createdUserId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://gorest.co.in/public"
+		},
+		{
+			"key": "randomName",
+			"value": ""
+		},
+		{
+			"key": "randomEmail",
+			"value": ""
+		},
+		{
+			"key": "randomGender",
+			"value": ""
+		},
+		{
+			"key": "randomStatus",
+			"value": ""
+		},
+		{
+			"key": "randomID",
+			"value": ""
+		},
+		{
+			"key": "totalId",
+			"value": ""
+		},
+		{
+			"key": "id",
+			"value": ""
+		},
+		{
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
