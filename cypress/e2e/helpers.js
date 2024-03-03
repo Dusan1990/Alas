@@ -60,7 +60,7 @@ export function finishTheProcess(){
     cy.get('#shopping_cart_container').click()
     // Assert that the product is present in the cart
     cy.get('.cart_item_label').should('exist')
-    // Click on the checkbox button
+    // Click on the checkout button
     cy.get('#checkout').click()
     // Provide credentials
     cy.get('#first-name').type('John')

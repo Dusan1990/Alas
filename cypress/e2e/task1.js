@@ -51,11 +51,16 @@ const login = new LoginPage()
         cy.get('.shopping_cart_badge').should('contain', '2')
         // Open the cart
         cy.get('#shopping_cart_container').click()
+        // Check the first product
+        cy.get('.inventory_item_name').eq(0).should('have.text', 'Sauce Labs Backpack')
+        // Check the second product
+        cy.get('.inventory_item_name').eq(1).should('have.text', 'Sauce Labs Bike Light')
         // Remove the product from the cart
-        cy.get('#remove-sauce-labs-bike-light').click()
+        cy.get('#remove-sauce-labs-backpack').click()
         // Assert that the product is removed
-        // Assert that the product is added to the cart
         cy.get('.shopping_cart_badge').should('contain', '1')
+        // Check the first product
+        cy.get('.inventory_item_name').eq(0).should('not.contain', 'Sauce Labs Backpack')
         // Click on the Continue shopping button
         cy.get('#continue-shopping').click()
         // Open the cart and finish the ordering process
