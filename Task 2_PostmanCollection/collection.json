@@ -7,7 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "Create user",
+			"name": "Create a user",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -122,56 +122,7 @@
 			"response": []
 		},
 		{
-			"name": "Get user details",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test('Status code is 404', function () {",
-							"    pm.response.to.have.status(404)",
-							"})",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{token}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{baseUrl}}/v2/users/{{createdUserId}}",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"v2",
-						"users",
-						"{{createdUserId}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update user details",
+			"name": "Update the user details",
 			"event": [
 				{
 					"listen": "test",
@@ -286,7 +237,7 @@
 			"response": []
 		},
 		{
-			"name": "Delete user",
+			"name": "Delete the user",
 			"event": [
 				{
 					"listen": "test",
@@ -313,6 +264,55 @@
 					]
 				},
 				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/v2/users/{{createdUserId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v2",
+						"users",
+						"{{createdUserId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Confirm that the user is deleted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status code is 404', function () {",
+							"    pm.response.to.have.status(404)",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
 				"header": [
 					{
 						"key": "Authorization",
@@ -394,7 +394,7 @@
 		},
 		{
 			"key": "token",
-			"value": "",
+			"value": "750d0d7e43aef8cb86bde4bfc31048138c13a0915988699f3253b393afee77d2",
 			"type": "string"
 		}
 	]

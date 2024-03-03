@@ -2,11 +2,8 @@ import LoginPage from './helpers.js'
 import * as loginFunction from './helpers.js'
 let header = Cypress.env('headerText')
 
-
-
-describe ('Task 1' , () => {
+describe ('Testing Swag Labs web store app' , () => {
 const login = new LoginPage()
-
 
     it('Log in with valid credentials', () => {
         // Provide a valid credentials
@@ -22,7 +19,7 @@ const login = new LoginPage()
         cy.get('.error-message-container.error').should('have.text', 'Epic sadface: Username and password do not match any user in this service')
     })
 
-    it('Order a product', () => {
+    it('Create an order', () => {
         // Provide a valid credentials
         loginFunction.loginWithValidCredentials()
         // Add product to the cart
@@ -39,7 +36,7 @@ const login = new LoginPage()
         loginFunction.finishTheProcess()
     })
 
-    it('Order a product with removing a product from the cart', () => {
+    it('Create an order, check removing a product from the cart', () => {
         // Provide a valid credentials
         loginFunction.loginWithValidCredentials()
         // Add product to the cart
@@ -63,6 +60,32 @@ const login = new LoginPage()
         cy.get('#continue-shopping').click()
         // Open the cart and finish the ordering process
         loginFunction.finishTheProcess()
+    })
+
+    it('Assert the inventory', () => {
+        // Provide a valid credentials
+        loginFunction.loginWithValidCredentials()
+        // Add product to the cart
+        cy.get('#add-to-cart-sauce-labs-backpack').click()
+        // Add product to the cart
+        cy.get('#add-to-cart-sauce-labs-bike-light').click()
+        // Open the cart
+        cy.get('#shopping_cart_container').click()
+        // Check the first product
+        cy.get('.inventory_item_name').eq(0).should('have.text', 'Sauce Labs Backpack')
+        // Check the quantity
+        cy.get('.cart_quantity').eq(0).should('have.text', '1')
+        // Check the second product
+        cy.get('.inventory_item_name').eq(1).should('have.text', 'Sauce Labs Bike Light')
+        // Check the quantity
+        cy.get('.cart_quantity').eq(1).should('have.text', '1')
+    })
+
+    it('Assert the product description', () => {
+        // Provide a valid credentials
+        loginFunction.loginWithValidCredentials()
+        cy.get('.inventory_item_desc').eq(0)
+            .should('have.text', 'carry.allTheThings() with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection.')
     })
 
     it('Locked out user', () => {
@@ -91,6 +114,13 @@ const login = new LoginPage()
         // Assert that the product is added the cart
         cy.get('.shopping_cart_badge').should('contain', '1')
         loginFunction.finishTheProcess()
+    })
+
+    it('Problem user, check the img', () => {
+        // Provide a Problem user credentials
+        loginFunction.problemUser()
+        // Assert that the backpack picture should exist
+        cy.get('img[src="/static/media/sauce-backpack-1200x1500.0a0b85a3.jpg"]').should('exist')
     })
 
     it('Error user, sorting', () => {
@@ -221,6 +251,6 @@ const login = new LoginPage()
         cy.get('.product_sort_container').select('Name (Z to A)')
         // Get the first item
         cy.get('.inventory_item').eq(0).find('.inventory_item_name ').should('have.text', 'Test.allTheThings() T-Shirt (Red)')
-})
+    })
 
 })

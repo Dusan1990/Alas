@@ -17,9 +17,9 @@ class LoginPage {
   }
   
   export default LoginPage
+  const login = new LoginPage()
 
   export function loginWithValidCredentials() {
-    const login = new LoginPage()
     cy.visit('https://www.saucedemo.com/')
     login.fillUsername('standard_user')
     login.fillPassword('secret_sauce')
@@ -28,7 +28,6 @@ class LoginPage {
 }
 
 export function loginWithInvalidCredentials() {
-    const login = new LoginPage()
     cy.visit('https://www.saucedemo.com/')
     login.fillUsername('test')
     login.fillPassword('test')
@@ -36,7 +35,6 @@ export function loginWithInvalidCredentials() {
 }
 
 export function lockedOutUser() {
-    const login = new LoginPage()
     cy.visit('https://www.saucedemo.com/')
     login.fillUsername('locked_out_user')
     login.fillPassword('secret_sauce')
@@ -44,7 +42,6 @@ export function lockedOutUser() {
 }
 
 export function problemUser() {
-    const login = new LoginPage()
     cy.visit('https://www.saucedemo.com/')
     login.fillUsername('problem_user')
     login.fillPassword('secret_sauce')
@@ -52,7 +49,6 @@ export function problemUser() {
 }
 
 export function error_user() {
-    const login = new LoginPage()
     cy.visit('https://www.saucedemo.com/')
     login.fillUsername('error_user')
     login.fillPassword('secret_sauce')
@@ -60,7 +56,6 @@ export function error_user() {
 }
 
 export function finishTheProcess(){
-    const login = new LoginPage()
     // Open the cart
     cy.get('#shopping_cart_container').click()
     // Assert that the product is present in the cart
